@@ -1,0 +1,9 @@
+{
+  "num_qubits": 2,
+  "gates": [
+    {"name": "h", "targets": [0]},
+    {"name": "cx", "controls": [0], "targets": [1]},
+    {"name": "rz", "targets": [0], "params": {"theta": 1.5707963267948966}}
+  ]
+}
+

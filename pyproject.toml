@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "state-vector-simulator"
+version = "0.1.0"
+description = "State vector simulator with linear XEB benchmarking"
+readme = "README.md"
+authors = [
+  { name = "State Vector Simulator Maintainers" }
+]
+requires-python = ">=3.9"
+dependencies = []
+license = { text = "MIT" }
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+keywords = ["quantum", "simulation", "state vector", "xeb"]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+]
+
+[project.scripts]
+state-vector-sim = "state_vector_simulator.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["state_vector_simulator"]
+
