@@ -158,6 +158,13 @@ To fully productionize:
      > comparison_results_small.txt
    ```
 3. Inspect summary for max errors and confirm they remain below tolerance.
+4. Run curated demo circuits to sanity-check the API end-to-end:
+   ```
+   python -m state_vector_simulator.examples.demo_circuits --example bell
+   python -m state_vector_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024 --seed 5
+   python -m state_vector_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 11
+   ```
+   These scripts output amplitudes, probabilities, and sampling summaries for Bell, Deutsch–Jozsa (constant/balanced oracles), and GHZ preparations.
 
 9. Conclusion & Paper Outline
 -----------------------------
@@ -171,4 +178,3 @@ We deliver a modular, extensible state-vector simulator with validated parity ag
 - **Appendix:** Command snippets, JSON schema, reproducibility checklist.
 
 Including the detailed gate validation logs and comparison outputs will substantiate the simulator’s correctness and readiness for research or production deployment.
-

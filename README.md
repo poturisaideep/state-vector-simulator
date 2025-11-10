@@ -49,6 +49,18 @@ state_vector_simulator/
   state-vector-sim simulate --circuit circuits/example.json --shots 512 --seed 123
   ```
 
+## Example Circuits
+
+Ready-made demonstrations live in `state_vector_simulator/examples/demo_circuits.py`. After activating your environment, run them as a module from the project root:
+
+```bash
+python -m state_vector_simulator.examples.demo_circuits --example bell
+python -m state_vector_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024 --seed 7
+python -m state_vector_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 123
+```
+
+Each command prints the final state vector, measurement probabilities, and (when `--shots > 0`) sampled counts. Use `--example bell|deutsch-jozsa|ghz` and, for Deutsch–Jozsa, pick `--oracle constant|balanced`.
+
 ## Circuit Specification
 
 Circuits are defined as JSON documents of the following structure:
