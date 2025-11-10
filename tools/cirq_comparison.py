@@ -12,6 +12,7 @@ Usage (after installing Cirq):
 from __future__ import annotations
 
 import argparse
+import cmath
 import math
 import random
 from dataclasses import dataclass
@@ -24,14 +25,19 @@ except ImportError as exc:  # pragma: no cover - runtime guard
         "Cirq is required for this comparison script. Install with `pip install cirq`."
     ) from exc
 
+import numpy as np
+
 from state_vector_simulator import (
     QuantumCircuit,
     StateVectorSimulator,
     compute_linear_xeb_fidelity,
 )
-
-
-DEFAULT_SINGLE_QUBIT_GATES = ("h", "rx", "ry", "rz", "s", "t")
+from state_vector_simulator import cli as _cli
+from state_vector_simulator.gates import (
+    DEFAULT_MULTI_QUBIT_GATES,
+    DEFAULT_SINGLE_QUBIT_GATES,
+    DEFAULT_TWO_QUBIT_GATES,
+)
 GLOBAL_PHASE_TOLERANCE = 1e-12
 
 
@@ -59,11 +65,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             for circuit_index in range(args.circuits_per_config):
                 circuit_seed = rng.randint(0, 2**31 - 1)
                 circuit_rng = random.Random(circuit_seed)
-                circuit = _random_circuit(
+                circuit = _cli._random_circuit(
                     num_qubits=num_qubits,
                     depth=depth,
                     single_qubit_gates=args.single_qubit_gates,
-                    rng=circuit_rng,
+                    two_qubit_gates=args.two_qubit_gates,
+                    multi_qubit_gates=args.multi_qubit_gates,
+                    seed=circuit_seed,
                 )
                 metric = _compare_with_cirq(
                     circuit,
@@ -115,6 +123,20 @@ def _build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_SINGLE_QUBIT_GATES,
         help="Pool of single-qubit gates to sample from",
     )
+    parser.add_argument(
+        "--two-qubit-gates",
+        type=str,
+        nargs="*",
+        default=DEFAULT_TWO_QUBIT_GATES,
+        help="Pool of two-qubit gates to sample from",
+    )
+    parser.add_argument(
+        "--multi-qubit-gates",
+        type=str,
+        nargs="*",
+        default=DEFAULT_MULTI_QUBIT_GATES,
+        help="Pool of multi-qubit gates to sample from",
+    )
     parser.add_argument("--shots", type=int, default=512, help="Number of samples for XEB comparison")
     parser.add_argument("--seed", type=int, default=1234, help="Master random seed")
     parser.add_argument(
@@ -138,38 +160,6 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _random_circuit(
-    *,
-    num_qubits: int,
-    depth: int,
-    single_qubit_gates: Iterable[str],
-    rng: random.Random,
-) -> QuantumCircuit:
-    if num_qubits <= 0:
-        raise ValueError("Number of qubits must be positive")
-    if depth <= 0:
-        raise ValueError("Depth must be positive")
-    gate_pool = list(single_qubit_gates)
-    if not gate_pool:
-        raise ValueError("Single-qubit gate set must not be empty")
-
-    circuit = QuantumCircuit(num_qubits)
-    for _layer in range(depth):
-        for qubit in range(num_qubits):
-            gate_name = rng.choice(gate_pool)
-            if gate_name in {"rx", "ry", "rz"}:
-                theta = rng.uniform(0.0, 2.0 * math.pi)
-                circuit.add_gate(gate_name, [qubit], params={"theta": theta})
-            else:
-                circuit.add_gate(gate_name, [qubit])
-
-        if num_qubits > 1:
-            control, target = rng.sample(range(num_qubits), 2)
-            circuit.cx(control, target)
-
-    return circuit
-
-
 def _compare_with_cirq(
     circuit: QuantumCircuit,
     *,
@@ -181,7 +171,7 @@ def _compare_with_cirq(
 ) -> ComparisonMetrics:
     ours = simulator.run(circuit, shots=shots, seed=seed)
     cirq_circuit, qubits = _circuit_to_cirq(circuit)
-    cirq_sim = cirq.Simulator()
+    cirq_sim = cirq.Simulator(dtype=np.complex128)
     cirq_result = cirq_sim.simulate(cirq_circuit)
     cirq_state = _to_little_endian_state(cirq_result.final_state_vector, circuit.num_qubits)
 
@@ -220,12 +210,70 @@ def _circuit_to_cirq(circuit: QuantumCircuit) -> Tuple[cirq.Circuit, Tuple[cirq.
             control = qubits[gate.controls[0]]
             target = qubits[gate.targets[0]]
             operations.append(cirq.CNOT(control, target))
+        elif gate.name == "cy" and len(gate.controls) == 1 and len(gate.targets) == 1:
+            control = qubits[gate.controls[0]]
+            target = qubits[gate.targets[0]]
+            operations.append(cirq.ControlledGate(cirq.Y)(control, target))
+        elif gate.name == "cz" and len(gate.controls) == 1 and len(gate.targets) == 1:
+            control = qubits[gate.controls[0]]
+            target = qubits[gate.targets[0]]
+            operations.append(cirq.CZ(control, target))
+        elif gate.name == "cp" and len(gate.controls) == 1 and len(gate.targets) == 1:
+            control = qubits[gate.controls[0]]
+            target = qubits[gate.targets[0]]
+            phi = float(gate.params.get("phi", 0.0))
+            operations.append(cirq.CZPowGate(exponent=phi / np.pi)(control, target))
+        elif gate.name == "swap" and len(gate.targets) == 2:
+            q1 = qubits[gate.targets[0]]
+            q2 = qubits[gate.targets[1]]
+            operations.append(cirq.SWAP(q1, q2))
+        elif gate.name == "iswap" and len(gate.targets) == 2:
+            q1 = qubits[gate.targets[0]]
+            q2 = qubits[gate.targets[1]]
+            operations.append(cirq.ISWAP(q1, q2))
+        elif gate.name == "sqrtiswap" and len(gate.targets) == 2:
+            q1 = qubits[gate.targets[0]]
+            q2 = qubits[gate.targets[1]]
+            operations.append((cirq.ISWAP ** 0.5)(q1, q2))
+        elif gate.name in {"rxx", "ryy", "rzz"} and len(gate.targets) == 2:
+            q1 = qubits[gate.targets[0]]
+            q2 = qubits[gate.targets[1]]
+            theta = float(gate.params.get("theta", 0.0))
+            exponent = theta / np.pi
+            if gate.name == "rxx":
+                operations.append(cirq.XXPowGate(exponent=exponent)(q1, q2))
+            elif gate.name == "ryy":
+                operations.append(cirq.YYPowGate(exponent=exponent)(q1, q2))
+            else:
+                operations.append(cirq.ZZPowGate(exponent=exponent)(q1, q2))
+        elif gate.name == "csx" and len(gate.controls) == 1 and len(gate.targets) == 1:
+            control = qubits[gate.controls[0]]
+            target = qubits[gate.targets[0]]
+            operations.append(cirq.ControlledGate(cirq.X ** 0.5)(control, target))
+        elif gate.name == "ccx" and len(gate.controls) == 2 and len(gate.targets) == 1:
+            c1 = qubits[gate.controls[0]]
+            c2 = qubits[gate.controls[1]]
+            target = qubits[gate.targets[0]]
+            operations.append(cirq.CCX(c1, c2, target))
+        elif gate.name == "ccz" and len(gate.controls) == 2 and len(gate.targets) == 1:
+            c1 = qubits[gate.controls[0]]
+            c2 = qubits[gate.controls[1]]
+            target = qubits[gate.targets[0]]
+            operations.append(cirq.CCZ(c1, c2, target))
+        elif gate.name == "cswap" and len(gate.controls) == 1 and len(gate.targets) == 2:
+            control = qubits[gate.controls[0]]
+            q1 = qubits[gate.targets[0]]
+            q2 = qubits[gate.targets[1]]
+            operations.append(cirq.CSWAP(control, q1, q2))
         else:  # pragma: no cover - defensive
             raise ValueError(f"Unsupported gate for Cirq conversion: {gate}")
     return cirq.Circuit(operations), qubits
 
 
 def _single_qubit_operation(name: str, qubit: cirq.Qid, params: Dict[str, float]) -> cirq.Operation:
+    two_pi = 2.0 * math.pi
+    if name == "id":
+        return cirq.I(qubit)
     if name == "x":
         return cirq.X(qubit)
     if name == "y":
@@ -236,8 +284,16 @@ def _single_qubit_operation(name: str, qubit: cirq.Qid, params: Dict[str, float]
         return cirq.H(qubit)
     if name == "s":
         return cirq.S(qubit)
+    if name == "sdg":
+        return (cirq.S ** -1)(qubit)
     if name == "t":
         return cirq.T(qubit)
+    if name == "tdg":
+        return (cirq.T ** -1)(qubit)
+    if name == "sx":
+        return (cirq.X ** 0.5)(qubit)
+    if name == "sxdg":
+        return (cirq.X ** -0.5)(qubit)
     if name in {"rx", "ry", "rz"}:
         theta = float(params.get("theta", 0.0))
         if name == "rx":
@@ -245,6 +301,35 @@ def _single_qubit_operation(name: str, qubit: cirq.Qid, params: Dict[str, float]
         if name == "ry":
             return cirq.ry(theta)(qubit)
         return cirq.rz(theta)(qubit)
+    if name == "u1":
+        lam = float(params.get("lambda", 0.0))
+        matrix = np.array([[1.0, 0.0], [0.0, cmath.exp(1j * lam)]], dtype=complex)
+        return cirq.MatrixGate(matrix)(qubit)
+    if name == "u2":
+        phi = float(params.get("phi", 0.0))
+        lam = float(params.get("lambda", 0.0))
+        matrix = (1 / math.sqrt(2)) * np.array(
+            [
+                [1.0, -cmath.exp(1j * lam)],
+                [cmath.exp(1j * phi), cmath.exp(1j * (phi + lam))],
+            ],
+            dtype=complex,
+        )
+        return cirq.MatrixGate(matrix)(qubit)
+    if name == "u3":
+        theta = float(params.get("theta", 0.0))
+        phi = float(params.get("phi", 0.0))
+        lam = float(params.get("lambda", 0.0))
+        cos = math.cos(theta / 2.0)
+        sin = math.sin(theta / 2.0)
+        matrix = np.array(
+            [
+                [cos, -cmath.exp(1j * lam) * sin],
+                [cmath.exp(1j * phi) * sin, cmath.exp(1j * (phi + lam)) * cos],
+            ],
+            dtype=complex,
+        )
+        return cirq.MatrixGate(matrix)(qubit)
     raise ValueError(f"Unsupported single-qubit gate: {name}")
 
 

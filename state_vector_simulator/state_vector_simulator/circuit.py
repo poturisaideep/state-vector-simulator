@@ -72,6 +72,9 @@ class QuantumCircuit:
         return self
 
     # Convenience builders -------------------------------------------------
+    def i(self, target: int) -> "QuantumCircuit":
+        return self.add_gate("id", [target])
+
     def x(self, target: int) -> "QuantumCircuit":
         return self.add_gate("x", [target])
 
@@ -87,8 +90,20 @@ class QuantumCircuit:
     def s(self, target: int) -> "QuantumCircuit":
         return self.add_gate("s", [target])
 
+    def sdg(self, target: int) -> "QuantumCircuit":
+        return self.add_gate("sdg", [target])
+
     def t(self, target: int) -> "QuantumCircuit":
         return self.add_gate("t", [target])
+
+    def tdg(self, target: int) -> "QuantumCircuit":
+        return self.add_gate("tdg", [target])
+
+    def sx(self, target: int) -> "QuantumCircuit":
+        return self.add_gate("sx", [target])
+
+    def sxdg(self, target: int) -> "QuantumCircuit":
+        return self.add_gate("sxdg", [target])
 
     def rx(self, target: int, theta: float) -> "QuantumCircuit":
         return self.add_gate("rx", [target], params={"theta": float(theta)})
@@ -99,8 +114,74 @@ class QuantumCircuit:
     def rz(self, target: int, theta: float) -> "QuantumCircuit":
         return self.add_gate("rz", [target], params={"theta": float(theta)})
 
+    def u1(self, target: int, lam: float) -> "QuantumCircuit":
+        return self.add_gate("u1", [target], params={"lambda": float(lam)})
+
+    def u2(self, target: int, phi: float, lam: float) -> "QuantumCircuit":
+        return self.add_gate("u2", [target], params={"phi": float(phi), "lambda": float(lam)})
+
+    def u3(self, target: int, theta: float, phi: float, lam: float) -> "QuantumCircuit":
+        return self.add_gate(
+            "u3",
+            [target],
+            params={"theta": float(theta), "phi": float(phi), "lambda": float(lam)},
+        )
+
     def cx(self, control: int, target: int) -> "QuantumCircuit":
         return self.add_gate("cx", [target], controls=[control])
+
+    def cy(self, control: int, target: int) -> "QuantumCircuit":
+        return self.add_gate("cy", [target], controls=[control])
+
+    def cz(self, control: int, target: int) -> "QuantumCircuit":
+        return self.add_gate("cz", [target], controls=[control])
+
+    def cp(self, control: int, target: int, phi: float) -> "QuantumCircuit":
+        return self.add_gate("cp", [target], controls=[control], params={"phi": float(phi)})
+
+    def swap(self, q1: int, q2: int) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("Swap operands must refer to distinct qubits")
+        return self.add_gate("swap", [q1, q2])
+
+    def iswap(self, q1: int, q2: int) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("iswap operands must refer to distinct qubits")
+        return self.add_gate("iswap", [q1, q2])
+
+    def sqrt_iswap(self, q1: int, q2: int) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("sqrtiswap operands must refer to distinct qubits")
+        return self.add_gate("sqrtiswap", [q1, q2])
+
+    def rxx(self, q1: int, q2: int, theta: float) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("rxx operands must refer to distinct qubits")
+        return self.add_gate("rxx", [q1, q2], params={"theta": float(theta)})
+
+    def ryy(self, q1: int, q2: int, theta: float) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("ryy operands must refer to distinct qubits")
+        return self.add_gate("ryy", [q1, q2], params={"theta": float(theta)})
+
+    def rzz(self, q1: int, q2: int, theta: float) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("rzz operands must refer to distinct qubits")
+        return self.add_gate("rzz", [q1, q2], params={"theta": float(theta)})
+
+    def csx(self, control: int, target: int) -> "QuantumCircuit":
+        return self.add_gate("csx", [target], controls=[control])
+
+    def ccx(self, control1: int, control2: int, target: int) -> "QuantumCircuit":
+        return self.add_gate("ccx", [target], controls=[control1, control2])
+
+    def ccz(self, control1: int, control2: int, target: int) -> "QuantumCircuit":
+        return self.add_gate("ccz", [target], controls=[control1, control2])
+
+    def cswap(self, control: int, q1: int, q2: int) -> "QuantumCircuit":
+        if q1 == q2:
+            raise ValueError("cswap target qubits must be distinct")
+        return self.add_gate("cswap", [q1, q2], controls=[control])
 
     # Serialisation --------------------------------------------------------
     def to_dict(self) -> Dict[str, object]:

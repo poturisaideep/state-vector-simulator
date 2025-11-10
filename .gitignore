@@ -1,0 +1,15 @@
+# Virtual environments
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Benchmark and comparison outputs
+comparison_results*.txt
+comparison_grid.txt
+comparison_smoke.txt
+
+# Misc
+.DS_Store
+

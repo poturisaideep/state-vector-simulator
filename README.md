@@ -9,28 +9,45 @@ cd "/Users/d2anubis/Desktop/state vector simulator"
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install --no-build-isolation -e .
+pip install -e .[dev]
 ```
 
-If you are working fully offline and installation fails because build tools cannot be downloaded, you can run the CLI straight from the source tree:
+`pip install -e .` installs the simulator and Cirq; the optional `[dev]` extra adds `pytest` for the unit tests. If you cannot compile wheels (offline environment), export the package on `PYTHONPATH` and call the CLI module directly:
 
 ```bash
-python -m state_vector_simulator.state_vector_simulator.cli random-circuit --qubits 3 --depth 5 --shots 1000
+export PYTHONPATH="$PWD/state_vector_simulator"
+python -m state_vector_simulator.cli random-circuit --qubits 3 --depth 5 --shots 1000
 ```
 
-## Usage
+## Repository Layout
 
-Run a random circuit XEB benchmark:
-
-```bash
-state-vector-sim random-circuit --qubits 3 --depth 5 --shots 1000
+```
+state_vector_simulator/
+├── circuit.py            # QuantumCircuit builder, JSON (de)serialization
+├── gates/                # Single-, two-, and multi-qubit gate handlers
+├── engine/               # StateVectorSimulator core, result dataclass, sampling
+├── linalg.py             # Shared tensor/linear algebra helpers
+├── cli.py                # CLI entry point (`state-vector-sim`)
+├── xeb.py                # Linear XEB fidelity helpers
+├── tools/cirq_comparison.py  # Parity harness against Cirq
+└── tests/                # Pytest parity checks for representative gates
 ```
 
-Simulate a circuit defined in JSON:
+## CLI Usage
 
-```bash
-state-vector-sim simulate --circuit circuits/example.json --shots 512 --seed 123
-```
+- Run a random-circuit XEB benchmark:
+
+  ```bash
+  state-vector-sim random-circuit --qubits 3 --depth 5 --shots 1000
+  ```
+
+  Use `--single-qubit-gates/--two-qubit-gates/--multi-qubit-gates` to override the default gate pools (`["h","rx","ry","rz","s","t"]`, `["cx","cz","swap"]`, none).
+
+- Simulate a circuit defined in JSON:
+
+  ```bash
+  state-vector-sim simulate --circuit circuits/example.json --shots 512 --seed 123
+  ```
 
 ## Circuit Specification
 
@@ -47,32 +64,56 @@ Circuits are defined as JSON documents of the following structure:
 }
 ```
 
-Supported gate names: `x`, `y`, `z`, `h`, `s`, `t`, `rx`, `ry`, `rz`, `cx`.
+Supported gate names (and their parameters):
 
-## Development
+- Single-qubit: `id`, `x`, `y`, `z`, `h`, `s`, `sdg`, `t`, `tdg`, `sx`, `sxdg`, `rx(θ)`, `ry(θ)`, `rz(θ)`, `u1(λ)`, `u2(φ,λ)`, `u3(θ,φ,λ)`
+- Two-qubit: `cx`, `cy`, `cz`, `cp(φ)`, `csx`, `swap`, `iswap`, `sqrtiswap`, `rxx(θ)`, `ryy(θ)`, `rzz(θ)`
+- Multi-qubit: `ccx`, `ccz`, `cswap`
 
-```bash
-pip install --no-build-isolation -e .[dev]
-pytest
-```
+## Testing & Validation
 
-## Comparing with Cirq
+1. **Unit tests (Pytest)**
 
-To validate the simulator against Cirq's reference implementation, install Cirq (requires internet access):
+   ```bash
+   pytest
+   ```
 
-```bash
-pip install cirq
-```
+   The tests execute representative single-, two-, and three-qubit circuits and assert that our simulator matches Cirq to ≤1e-7 after global phase alignment.
 
-Then run the comparison harness:
+2. **Parity harness against Cirq**
 
-```bash
-python tools/cirq_comparison.py --max-qubits 3 --depths 3 5 --circuits-per-config 5 --shots 512
-```
+   ```bash
+   export PYTHONPATH="$PWD/state_vector_simulator"  # only needed if not pip-installed
+   python tools/cirq_comparison.py \
+     --min-qubits 1 --max-qubits 5 \
+     --depths 3 5 \
+     --circuits-per-config 3 \
+     --shots 256 \
+     --seed 7
+   ```
 
-The script reports maximum deviations in amplitudes, probabilities, and XEB fidelity across the generated test circuits. Use `--help` for additional options.
+   The summary at the end reports maximum amplitude/probability/XEB deviations. Pass `--help` to explore gate-pool overrides or larger qubit ranges. For qubits ≥20, allocate ample RAM (≥16 GB) and expect runtimes of multiple minutes.
 
-> **Note:** If you haven’t installed the package in editable mode, point Python at the sources first, e.g. `export PYTHONPATH="$PWD/state_vector_simulator"`.
+3. **Large-scale sweep (optional)**
+
+   ```bash
+   python tools/cirq_comparison.py \
+     --min-qubits 5 --max-qubits 25 \
+     --depths 5 \
+     --circuits-per-config 1 \
+     --shots 0 \
+     --seed 42 \
+     > comparison_results_25q.txt
+   ```
+
+   This tests state-vector parity without sampling. Inspect the resulting file for per-configuration error logs and the summary block.
+
+## Development Workflow
+
+- Run `pytest` before committing.
+- Use `state-vector-sim random-circuit` to generate sample workloads or JSONs for reproducible scenarios.
+- Benchmark changes with `tools/cirq_comparison.py` to confirm parity with Cirq remains within tolerance.
+- Generated artifacts (`comparison_results*.txt`, `__pycache__/`, virtual environments) are ignored via `.gitignore`.
 
 ## License
 
