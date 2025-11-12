@@ -1,0 +1,147 @@
+State Vector Simulator vs Cirq — 25-qubit sweep @ depth 100
+==========================================================
+
+Each line records the maximum amplitude (`amp_err`) and probability (`prob_err`)
+differences between our simulator and Cirq for a single random circuit of the
+given size. All circuits were evolved without measurement sampling (shots=0);
+global phase was aligned before computing errors. Lower is better.
+
+[qubits=1 depth=100 circuit=0] amp_err=1.421e-06 prob_err=2.444e-06
+[qubits=2 depth=100 circuit=0] amp_err=2.176e-07 prob_err=5.960e-08
+[qubits=3 depth=100 circuit=0] amp_err=2.403e-07 prob_err=2.086e-07
+[qubits=4 depth=100 circuit=0] amp_err=1.252e-06 prob_err=7.749e-07
+[qubits=5 depth=100 circuit=0] amp_err=3.799e-07 prob_err=1.043e-07
+[qubits=6 depth=100 circuit=0] amp_err=4.824e-07 prob_err=1.006e-07
+[qubits=7 depth=100 circuit=0] amp_err=1.791e-07 prob_err=3.725e-08
+[qubits=8 depth=100 circuit=0] amp_err=2.399e-07 prob_err=2.421e-08
+[qubits=9 depth=100 circuit=0] amp_err=1.956e-07 prob_err=4.470e-08
+[qubits=10 depth=100 circuit=0] amp_err=1.086e-07 prob_err=7.916e-09
+[qubits=11 depth=100 circuit=0] amp_err=2.757e-07 prob_err=2.561e-08
+[qubits=12 depth=100 circuit=0] amp_err=9.680e-08 prob_err=7.916e-09
+[qubits=13 depth=100 circuit=0] amp_err=4.581e-08 prob_err=2.270e-09
+[qubits=14 depth=100 circuit=0] amp_err=3.316e-08 prob_err=9.022e-10
+[qubits=15 depth=100 circuit=0] amp_err=2.778e-08 prob_err=6.403e-10
+[qubits=16 depth=100 circuit=0] amp_err=3.010e-08 prob_err=7.713e-10
+[qubits=17 depth=100 circuit=0] amp_err=1.327e-08 prob_err=1.419e-10
+[qubits=18 depth=100 circuit=0] amp_err=5.917e-08 prob_err=7.894e-10
+[qubits=19 depth=100 circuit=0] amp_err=8.258e-09 prob_err=6.185e-11
+[qubits=20 depth=100 circuit=0] amp_err=7.549e-09 prob_err=2.819e-11
+[qubits=21 depth=100 circuit=0] amp_err=1.626e-08 prob_err=4.911e-11
+[qubits=22 depth=100 circuit=0] amp_err=1.488e-08 prob_err=6.639e-11
+[qubits=23 depth=100 circuit=0] amp_err=2.847e-09 prob_err=4.206e-12
+[qubits=24 depth=100 circuit=0] amp_err=4.052e-09 prob_err=2.615e-12
+[qubits=25 depth=100 circuit=0] amp_err=2.228e-09 prob_err=2.558e-12
+
+Max amplitude error: 1.252e-06 (4 qubits)
+Max probability error: 7.749e-07 (4 qubits)
+
+Short-depth sweep (qubits ≤5, depth 3 & 5, 10 circuits each)
+------------------------------------------------------------
+XEB sampling enabled (`shots=256` assumed); errors reported after global phase alignment.
+
+[qubits=1 depth=3 circuit=0] amp_err=0.000e+00 prob_err=5.960e-08 xeb_err=7.285e-08
+[qubits=1 depth=3 circuit=1] amp_err=0.000e+00 prob_err=0.000e+00 xeb_err=4.977e-09
+[qubits=1 depth=3 circuit=2] amp_err=6.519e-09 prob_err=1.490e-08 xeb_err=2.999e-08
+[qubits=1 depth=3 circuit=3] amp_err=0.000e+00 prob_err=5.960e-08 xeb_err=8.046e-08
+[qubits=1 depth=3 circuit=4] amp_err=1.863e-09 prob_err=5.960e-08 xeb_err=9.573e-08
+[qubits=1 depth=3 circuit=5] amp_err=5.960e-08 prob_err=1.192e-07 xeb_err=2.065e-07
+[qubits=1 depth=3 circuit=6] amp_err=5.960e-08 prob_err=1.192e-07 xeb_err=1.842e-07
+[qubits=1 depth=3 circuit=7] amp_err=0.000e+00 prob_err=0.000e+00 xeb_err=0.000e+00
+[qubits=1 depth=3 circuit=8] amp_err=8.429e-08 prob_err=5.960e-08 xeb_err=1.491e-07
+[qubits=1 depth=3 circuit=9] amp_err=1.192e-07 prob_err=2.384e-07 xeb_err=4.320e-07
+[qubits=1 depth=5 circuit=0] amp_err=2.529e-07 prob_err=5.364e-07 xeb_err=9.842e-07
+[qubits=1 depth=5 circuit=1] amp_err=0.000e+00 prob_err=0.000e+00 xeb_err=8.882e-16
+[qubits=1 depth=5 circuit=2] amp_err=6.664e-08 prob_err=1.192e-07 xeb_err=1.783e-07
+[qubits=1 depth=5 circuit=3] amp_err=1.193e-07 prob_err=1.788e-07 xeb_err=1.820e-07
+[qubits=1 depth=5 circuit=4] amp_err=0.000e+00 prob_err=5.960e-08 xeb_err=7.516e-08
+[qubits=1 depth=5 circuit=5] amp_err=2.980e-08 prob_err=0.000e+00 xeb_err=0.000e+00
+[qubits=1 depth=5 circuit=6] amp_err=0.000e+00 prob_err=5.960e-08 xeb_err=2.980e-08
+[qubits=1 depth=5 circuit=7] amp_err=6.664e-08 prob_err=5.960e-08 xeb_err=9.311e-08
+[qubits=1 depth=5 circuit=8] amp_err=2.995e-07 prob_err=4.768e-07 xeb_err=9.631e-07
+[qubits=1 depth=5 circuit=9] amp_err=1.490e-08 prob_err=3.725e-09 xeb_err=7.531e-09
+[qubits=2 depth=3 circuit=0] amp_err=0.000e+00 prob_err=7.451e-09 xeb_err=1.110e-08
+[qubits=2 depth=3 circuit=1] amp_err=6.144e-08 prob_err=1.192e-07 xeb_err=2.567e-07
+[qubits=2 depth=3 circuit=2] amp_err=0.000e+00 prob_err=0.000e+00 xeb_err=3.000e-08
+[qubits=2 depth=3 circuit=3] amp_err=1.502e-08 prob_err=2.980e-08 xeb_err=6.210e-08
+[qubits=2 depth=3 circuit=4] amp_err=3.122e-08 prob_err=5.960e-08 xeb_err=2.222e-07
+[qubits=2 depth=3 circuit=5] amp_err=5.960e-08 prob_err=2.980e-08 xeb_err=1.412e-07
+[qubits=2 depth=3 circuit=6] amp_err=1.192e-07 prob_err=1.788e-07 xeb_err=5.526e-07
+[qubits=2 depth=3 circuit=7] amp_err=4.215e-08 prob_err=5.960e-08 xeb_err=1.157e-07
+[qubits=2 depth=3 circuit=8] amp_err=2.980e-08 prob_err=5.960e-08 xeb_err=4.171e-09
+[qubits=2 depth=3 circuit=9] amp_err=2.107e-08 prob_err=2.980e-08 xeb_err=9.528e-08
+[qubits=2 depth=5 circuit=0] amp_err=1.490e-07 prob_err=1.788e-07 xeb_err=4.620e-07
+[qubits=2 depth=5 circuit=1] amp_err=4.215e-08 prob_err=2.980e-08 xeb_err=7.668e-08
+[qubits=2 depth=5 circuit=2] amp_err=8.429e-08 prob_err=8.941e-08 xeb_err=1.988e-07
+[qubits=2 depth=5 circuit=3] amp_err=1.333e-07 prob_err=8.941e-08 xeb_err=1.757e-07
+[qubits=2 depth=5 circuit=4] amp_err=3.332e-08 prob_err=5.960e-08 xeb_err=8.743e-08
+[qubits=2 depth=5 circuit=5] amp_err=1.843e-07 prob_err=2.086e-07 xeb_err=5.749e-07
+[qubits=2 depth=5 circuit=6] amp_err=2.980e-08 prob_err=2.980e-08 xeb_err=9.516e-08
+[qubits=2 depth=5 circuit=7] amp_err=6.664e-08 prob_err=2.980e-08 xeb_err=2.809e-08
+[qubits=2 depth=5 circuit=8] amp_err=6.664e-08 prob_err=2.980e-08 xeb_err=7.809e-08
+[qubits=2 depth=5 circuit=9] amp_err=4.189e-07 prob_err=5.960e-07 xeb_err=2.312e-06
+[qubits=3 depth=3 circuit=0] amp_err=2.980e-08 prob_err=5.960e-08 xeb_err=2.231e-07
+[qubits=3 depth=3 circuit=1] amp_err=7.451e-08 prob_err=1.192e-07 xeb_err=4.800e-07
+[qubits=3 depth=3 circuit=2] amp_err=6.506e-08 prob_err=4.470e-08 xeb_err=2.770e-07
+[qubits=3 depth=3 circuit=3] amp_err=1.290e-07 prob_err=1.192e-07 xeb_err=6.109e-07
+[qubits=3 depth=3 circuit=4] amp_err=3.332e-08 prob_err=9.313e-10 xeb_err=1.864e-08
+[qubits=3 depth=3 circuit=5] amp_err=1.192e-07 prob_err=1.788e-07 xeb_err=1.154e-06
+[qubits=3 depth=3 circuit=6] amp_err=1.264e-07 prob_err=1.788e-07 xeb_err=9.352e-07
+[qubits=3 depth=3 circuit=7] amp_err=6.366e-08 prob_err=8.941e-08 xeb_err=3.703e-07
+[qubits=3 depth=3 circuit=8] amp_err=1.201e-07 prob_err=7.451e-08 xeb_err=1.027e-07
+[qubits=3 depth=3 circuit=9] amp_err=7.451e-08 prob_err=8.941e-08 xeb_err=5.613e-07
+[qubits=3 depth=5 circuit=0] amp_err=6.664e-08 prob_err=2.980e-08 xeb_err=9.553e-08
+[qubits=3 depth=5 circuit=1] amp_err=3.488e-07 prob_err=8.941e-08 xeb_err=3.246e-07
+[qubits=3 depth=5 circuit=2] amp_err=8.429e-08 prob_err=8.941e-08 xeb_err=3.142e-07
+[qubits=3 depth=5 circuit=3] amp_err=1.229e-07 prob_err=1.490e-07 xeb_err=7.963e-07
+[qubits=3 depth=5 circuit=4] amp_err=8.429e-08 prob_err=8.941e-08 xeb_err=1.647e-07
+[qubits=3 depth=5 circuit=5] amp_err=1.605e-07 prob_err=1.043e-07 xeb_err=5.061e-07
+[qubits=3 depth=5 circuit=6] amp_err=5.373e-08 prob_err=4.470e-08 xeb_err=1.796e-07
+[qubits=3 depth=5 circuit=7] amp_err=6.839e-08 prob_err=8.941e-08 xeb_err=3.719e-07
+[qubits=3 depth=5 circuit=8] amp_err=6.664e-08 prob_err=2.980e-08 xeb_err=3.214e-07
+[qubits=3 depth=5 circuit=9] amp_err=1.843e-07 prob_err=1.788e-07 xeb_err=7.026e-07
+[qubits=4 depth=3 circuit=0] amp_err=1.843e-07 prob_err=2.682e-07 xeb_err=3.042e-06
+[qubits=4 depth=3 circuit=1] amp_err=6.664e-08 prob_err=2.980e-08 xeb_err=1.553e-07
+[qubits=4 depth=3 circuit=2] amp_err=2.107e-08 prob_err=5.960e-08 xeb_err=2.570e-07
+[qubits=4 depth=3 circuit=3] amp_err=8.941e-08 prob_err=5.960e-08 xeb_err=4.764e-07
+[qubits=4 depth=3 circuit=4] amp_err=1.192e-07 prob_err=8.941e-08 xeb_err=4.423e-07
+[qubits=4 depth=3 circuit=5] amp_err=1.164e-07 prob_err=1.490e-07 xeb_err=1.215e-06
+[qubits=4 depth=3 circuit=6] amp_err=9.064e-08 prob_err=8.941e-08 xeb_err=1.038e-06
+[qubits=4 depth=3 circuit=7] amp_err=4.470e-08 prob_err=4.470e-08 xeb_err=3.339e-07
+[qubits=4 depth=3 circuit=8] amp_err=5.960e-08 prob_err=1.192e-07 xeb_err=1.544e-06
+[qubits=4 depth=3 circuit=9] amp_err=8.429e-08 prob_err=5.960e-08 xeb_err=8.164e-07
+[qubits=4 depth=5 circuit=0] amp_err=1.273e-07 prob_err=8.941e-08 xeb_err=4.838e-07
+[qubits=4 depth=5 circuit=1] amp_err=9.064e-08 prob_err=5.960e-08 xeb_err=3.817e-07
+[qubits=4 depth=5 circuit=2] amp_err=1.137e-07 prob_err=2.980e-08 xeb_err=1.282e-07
+[qubits=4 depth=5 circuit=3] amp_err=9.424e-08 prob_err=7.451e-08 xeb_err=5.671e-07
+[qubits=4 depth=5 circuit=4] amp_err=4.215e-08 prob_err=2.980e-08 xeb_err=3.273e-07
+[qubits=4 depth=5 circuit=5] amp_err=1.605e-07 prob_err=1.490e-07 xeb_err=1.031e-06
+[qubits=4 depth=5 circuit=6] amp_err=8.429e-08 prob_err=5.215e-08 xeb_err=2.468e-07
+[qubits=4 depth=5 circuit=7] amp_err=9.424e-08 prob_err=7.451e-08 xeb_err=4.617e-07
+[qubits=4 depth=5 circuit=8] amp_err=1.639e-07 prob_err=7.451e-08 xeb_err=4.901e-07
+[qubits=4 depth=5 circuit=9] amp_err=3.332e-08 prob_err=2.980e-08 xeb_err=2.959e-07
+[qubits=5 depth=3 circuit=0] amp_err=4.215e-08 prob_err=2.980e-08 xeb_err=4.284e-07
+[qubits=5 depth=3 circuit=1] amp_err=9.064e-08 prob_err=5.960e-08 xeb_err=1.630e-06
+[qubits=5 depth=3 circuit=2] amp_err=3.332e-08 prob_err=1.490e-08 xeb_err=1.651e-07
+[qubits=5 depth=3 circuit=3] amp_err=6.366e-08 prob_err=2.980e-08 xeb_err=4.871e-07
+[qubits=5 depth=3 circuit=4] amp_err=6.664e-08 prob_err=4.470e-08 xeb_err=4.029e-07
+[qubits=5 depth=3 circuit=5] amp_err=5.960e-08 prob_err=1.490e-08 xeb_err=1.691e-07
+[qubits=5 depth=3 circuit=6] amp_err=3.332e-08 prob_err=1.490e-08 xeb_err=3.932e-07
+[qubits=5 depth=3 circuit=7] amp_err=2.980e-08 prob_err=1.490e-08 xeb_err=3.385e-07
+[qubits=5 depth=3 circuit=8] amp_err=2.980e-08 prob_err=1.118e-08 xeb_err=7.208e-08
+[qubits=5 depth=3 circuit=9] amp_err=8.429e-08 prob_err=7.451e-08 xeb_err=8.253e-07
+[qubits=5 depth=5 circuit=0] amp_err=1.229e-07 prob_err=8.941e-08 xeb_err=1.023e-06
+[qubits=5 depth=5 circuit=1] amp_err=9.064e-08 prob_err=3.725e-08 xeb_err=2.543e-07
+[qubits=5 depth=5 circuit=2] amp_err=4.771e-08 prob_err=2.980e-08 xeb_err=4.212e-07
+[qubits=5 depth=5 circuit=3] amp_err=4.657e-08 prob_err=3.725e-08 xeb_err=2.257e-08
+[qubits=5 depth=5 circuit=4] amp_err=8.429e-08 prob_err=7.451e-08 xeb_err=1.498e-06
+[qubits=5 depth=5 circuit=5] amp_err=9.424e-08 prob_err=1.490e-08 xeb_err=9.690e-08
+[qubits=5 depth=5 circuit=6] amp_err=8.025e-08 prob_err=5.960e-08 xeb_err=7.098e-07
+[qubits=5 depth=5 circuit=7] amp_err=5.373e-08 prob_err=2.235e-08 xeb_err=2.596e-07
+[qubits=5 depth=5 circuit=8] amp_err=6.101e-08 prob_err=2.608e-08 xeb_err=2.617e-07
+[qubits=5 depth=5 circuit=9] amp_err=4.012e-08 prob_err=2.235e-08 xeb_err=8.593e-08
+
+Short-depth summary:
+  Max amplitude error   : 4.188923e-07
+  Max probability error : 5.960464e-07
+  Max XEB error         : 3.041913e-06
+
