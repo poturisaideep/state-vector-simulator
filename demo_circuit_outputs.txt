@@ -1,0 +1,54 @@
+State Vector Simulator demo circuits
+====================================
+
+Commands were executed from `/Users/d2anubis/Desktop/state vector simulator/state_vector_simulator`
+using the project virtual environment.
+
+Bell state
+----------
+Command:
+  python -m state_vector_simulator.examples.demo_circuits --example bell
+
+Output:
+  Number of qubits: 2
+  Final state amplitudes:
+  [0.707107+0.j 0.      +0.j 0.      +0.j 0.707107+0.j]
+  Measurement probabilities per computational basis state:
+    P(|00⟩) = 0.500000
+    P(|11⟩) = 0.500000
+
+Deutsch–Jozsa (balanced oracle, sampled)
+----------------------------------------
+Command:
+  python -m state_vector_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024 --seed 7
+
+Output:
+  Number of qubits: 2
+  Final state amplitudes:
+  [ 0.      +0.j  0.707107+0.j -0.      +0.j -0.707107+0.j]
+  Measurement probabilities per computational basis state:
+    P(|01⟩) = 0.500000
+    P(|11⟩) = 0.500000
+
+  Sampled 1024 shots (seed=7):
+    01: 517 times
+    11: 507 times
+
+GHZ state (sampled)
+-------------------
+Command:
+  python -m state_vector_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 123
+
+Output:
+  Number of qubits: 3
+  Final state amplitudes:
+  [0.707107+0.j 0.      +0.j 0.      +0.j 0.      +0.j 0.      +0.j
+   0.      +0.j 0.      +0.j 0.707107+0.j]
+  Measurement probabilities per computational basis state:
+    P(|000⟩) = 0.500000
+    P(|111⟩) = 0.500000
+
+  Sampled 1000 shots (seed=123):
+    000: 501 times
+    111: 499 times
+
