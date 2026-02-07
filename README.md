@@ -1,43 +1,62 @@
 # Qomputing Simulator
 
-Qomputing Simulator is a lightweight, pure Python toolkit for simulating quantum state vectors and running linear cross-entropy benchmarking (XEB) experiments end-to-end. Install with `pip install qomputing-simulator`.
+Qomputing Simulator is a lightweight, pure Python toolkit for simulating quantum state vectors and running linear cross-entropy benchmarking (XEB) experiments end-to-end.
+
+**Install:** `pip install qomputing-simulator`  
+(Or from source: `pip install .` in the repo, or `pip install git+https://github.com/d2Anubis/state-vector-simulator.git`)
+
+---
+
+## Use it after install
+
+Once `pip install qomputing-simulator` is done, people can use it in two ways.
+
+### 1. From the command line (CLI)
+
+**Run these in a terminal (bash/shell), not inside Python or IPython.**
+
+```bash
+# Random circuit + XEB benchmark
+qomputing-sim random-circuit --qubits 3 --depth 5 --shots 1000
+
+# Simulate a circuit from a JSON file (use a real path to your circuit file)
+qomputing-sim simulate --circuit circuits/example.json --shots 512 --seed 42
+```
+
+### 2. From Python (library)
+
+**Run this code in a Python script or notebook (e.g. IPython/Jupyter).**
+
+```python
+from qomputing_simulator import run, QuantumCircuit, load_circuit, run_xeb, random_circuit
+
+# Build a circuit and run it (no file needed)
+circuit = QuantumCircuit(2)
+circuit.h(0).cx(0, 1)   # Bell state
+result = run(circuit, shots=1000, seed=42)
+print(result.final_state, result.probabilities, result.counts)
+
+# Optional: load a circuit from a JSON file (use a path that exists on your machine)
+# circuit = load_circuit("circuits/example.json")
+# result = run(circuit, shots=512)
+
+# Random circuit + linear XEB
+circuit = random_circuit(num_qubits=3, depth=5, seed=7)
+xeb = run_xeb(circuit, shots=1000, seed=7)
+print(xeb.fidelity, xeb.sample_probabilities)
+```
 
 ---
 
 ## How people install (step-by-step)
 
-After the package is on PyPI, **users** can install and run it like this:
-
-1. **Install the package**
+1. **Install**
    ```bash
    pip install qomputing-simulator
    ```
+   Optional: use a virtual environment first (`python3 -m venv .venv` then `source .venv/bin/activate` on macOS/Linux).
 
-2. **Use the CLI** (optional)
-   ```bash
-   qomputing-sim random-circuit --qubits 3 --depth 5 --shots 1000
-   qomputing-sim simulate --circuit path/to/circuit.json --shots 512
-   ```
-
-3. **Use it in Python**
-   ```python
-   from qomputing_simulator import run, QuantumCircuit, load_circuit, run_xeb, random_circuit
-
-   circuit = QuantumCircuit(2)
-   circuit.h(0).cx(0, 1)
-   result = run(circuit, shots=1000, seed=42)
-   print(result.counts)
-   ```
-
-**Optional:** Create a virtual environment first (recommended):
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install qomputing-simulator
-```
-
-**Optional extras:** `pip install qomputing-simulator[dev]` (adds pytest), `pip install qomputing-simulator[build]` (adds build tool).
+2. **Optional extras:** `pip install qomputing-simulator[dev]` (adds pytest), `pip install qomputing-simulator[build]` (adds build tool).
 
 ---
 
@@ -54,6 +73,15 @@ pip install qomputing-simulator
   git commit -m "Rename to qomputing-simulator"
   git push -u origin main
   ```
+
+**GitHub permission (browser redirect + passcode):** If `git push` asks for login, use GitHub’s web flow so you’re redirected to GitHub to approve:
+
+  ```bash
+  ./scripts/github-auth.sh
+  ```
+
+  That script uses the [GitHub CLI](https://cli.github.com/) (`gh`). It will open your browser → you log in on GitHub → GitHub shows a one-time code → you paste the code back in the terminal. After that, `git push origin main` works without a password.  
+  If you don’t have `gh`: install it (e.g. `brew install gh` on macOS), then run `./scripts/github-auth.sh` again.
 
 - People can clone and install from source: `git clone https://github.com/YOUR_USERNAME/qomputing-simulator.git` then `pip install .` in the repo.
 
