@@ -2,6 +2,7 @@
 
 from .circuit import Gate, QuantumCircuit
 from .engine import SimulationResult, StateVectorSimulator
+from .run import load_circuit, random_circuit, run, run_xeb
 from .xeb import LinearXEBResult, compute_linear_xeb_fidelity, run_linear_xeb_experiment
 
 __all__ = [
@@ -12,5 +13,10 @@ __all__ = [
     "LinearXEBResult",
     "compute_linear_xeb_fidelity",
     "run_linear_xeb_experiment",
+    # Library API
+    "load_circuit",
+    "run",
+    "run_xeb",
+    "random_circuit",
 ]
 

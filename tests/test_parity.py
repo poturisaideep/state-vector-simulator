@@ -3,7 +3,7 @@ import numpy as np
 import cirq
 import pytest
 
-from state_vector_simulator import QuantumCircuit, StateVectorSimulator
+from qomputing_simulator import QuantumCircuit, StateVectorSimulator
 
 
 def _align_global_phase(reference: np.ndarray, candidate: np.ndarray) -> np.ndarray:

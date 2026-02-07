@@ -7,9 +7,9 @@ Examples included:
 
 Run with:
 
-  python -m state_vector_simulator.examples.demo_circuits --example bell
-  python -m state_vector_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024
-  python -m state_vector_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 42
+  python -m qomputing_simulator.examples.demo_circuits --example bell
+  python -m qomputing_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024
+  python -m qomputing_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 42
 """
 
 from __future__ import annotations
@@ -19,8 +19,8 @@ from typing import Callable, Dict
 
 import numpy as np
 
-from state_vector_simulator.circuit import QuantumCircuit
-from state_vector_simulator.simulator import StateVectorSimulator
+from ..circuit import QuantumCircuit
+from ..simulator import StateVectorSimulator
 
 
 def build_bell_circuit() -> QuantumCircuit:

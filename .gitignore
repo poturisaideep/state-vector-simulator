@@ -10,6 +10,11 @@ comparison_results*.txt
 comparison_grid.txt
 comparison_smoke.txt
 
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
 # Misc
 .DS_Store
 
