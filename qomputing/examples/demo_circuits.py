@@ -7,9 +7,9 @@ Examples included:
 
 Run with:
 
-  python -m qomputing_simulator.examples.demo_circuits --example bell
-  python -m qomputing_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024
-  python -m qomputing_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 42
+  python -m qomputing.examples.demo_circuits --example bell
+  python -m qomputing.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024
+  python -m qomputing.examples.demo_circuits --example ghz --shots 1000 --seed 42
 """
 
 from __future__ import annotations

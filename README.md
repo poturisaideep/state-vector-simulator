@@ -2,14 +2,14 @@
 
 Qomputing Simulator is a lightweight, pure Python toolkit for simulating quantum state vectors and running linear cross-entropy benchmarking (XEB) experiments end-to-end.
 
-**Install:** `pip install qomputing-simulator`  
+**Install:** `pip install qomputing`  
 (Or from source: `pip install .` in the repo, or `pip install git+https://github.com/d2Anubis/state-vector-simulator.git`)
 
 ---
 
 ## Use it after install
 
-Once `pip install qomputing-simulator` is done, people can use it in two ways.
+Once `pip install qomputing` is done, people can use it in two ways.
 
 ### 1. From the command line (CLI)
 
@@ -30,7 +30,7 @@ qomputing-sim simulate --circuit circuits/example.json --shots 512 --seed 42
 **Backend API (recommended):** Import `QomputingSimulator`, get a backend, then `backend.run(qc, shots=...)` and `result.get_counts()`:
 
 ```python
-from qomputing_simulator import QomputingSimulator, QuantumCircuit
+from qomputing import QomputingSimulator, QuantumCircuit
 
 backend = QomputingSimulator.get_backend("state_vector")
 
@@ -48,7 +48,7 @@ print(counts)
 **Simple API (no backend):** Build a circuit and use `run()` for a quick result:
 
 ```python
-from qomputing_simulator import run, QuantumCircuit, run_xeb, random_circuit
+from qomputing import run, QuantumCircuit, run_xeb, random_circuit
 
 circuit = QuantumCircuit(2)
 circuit.h(0).cx(0, 1)   # Bell state
@@ -65,11 +65,11 @@ print(xeb.fidelity, xeb.sample_probabilities)
 1. Open [Google Colab](https://colab.research.google.com/) and create a new notebook.
 2. **First cell** (install):
    ```python
-   !pip install qomputing-simulator -q
+   !pip install qomputing -q
    ```
 3. **Next cell** (use the library; the CLI is for terminals only):
    ```python
-   from qomputing_simulator import QomputingSimulator, QuantumCircuit
+   from qomputing import QomputingSimulator, QuantumCircuit
 
    backend = QomputingSimulator.get_backend("state_vector")
    qc = QuantumCircuit(2)
@@ -84,11 +84,11 @@ print(xeb.fidelity, xeb.sample_probabilities)
 
 1. **Install**
    ```bash
-   pip install qomputing-simulator
+   pip install qomputing
    ```
    Optional: use a virtual environment first (`python3 -m venv .venv` then `source .venv/bin/activate` on macOS/Linux).
 
-2. **Optional extras:** `pip install qomputing-simulator[dev]` (adds pytest), `pip install qomputing-simulator[build]` (adds build tool).
+2. **Optional extras:** `pip install qomputing[dev]` (adds pytest), `pip install qomputing[build]` (adds build tool).
 
 ---
 
@@ -100,9 +100,9 @@ print(xeb.fidelity, xeb.sample_probabilities)
 - Create a repo if needed, then from your project folder:
 
   ```bash
-  git remote add origin https://github.com/YOUR_USERNAME/qomputing-simulator.git
+  git remote add origin https://github.com/YOUR_USERNAME/qomputing.git
   git add .
-  git commit -m "Rename to qomputing-simulator"
+  git commit -m "Rename to qomputing"
   git push -u origin main
   ```
 
@@ -115,9 +115,9 @@ print(xeb.fidelity, xeb.sample_probabilities)
   That script uses the [GitHub CLI](https://cli.github.com/) (`gh`). It will open your browser → you log in on GitHub → GitHub shows a one-time code → you paste the code back in the terminal. After that, `git push origin main` works without a password.  
   If you don’t have `gh`: install it (e.g. `brew install gh` on macOS), then run `./scripts/github-auth.sh` again.
 
-- People can clone and install from source: `git clone https://github.com/YOUR_USERNAME/qomputing-simulator.git` then `pip install .` in the repo.
+- People can clone and install from source: `git clone https://github.com/YOUR_USERNAME/qomputing.git` then `pip install .` in the repo.
 
-### 2. Publish to PyPI (so anyone can `pip install qomputing-simulator`)
+### 2. Publish to PyPI (so anyone can `pip install qomputing`)
 
 PyPI is the default place pip installs from. Steps:
 
@@ -135,14 +135,14 @@ PyPI is the default place pip installs from. Steps:
    cd /path/to/simulator
    python -m build
    ```
-   This creates `dist/qomputing_simulator-0.1.0-py3-none-any.whl` and `dist/qomputing_simulator-0.1.0.tar.gz`.
+   This creates `dist/qomputing-0.1.0-py3-none-any.whl` and `dist/qomputing-0.1.0.tar.gz`.
 
 4. **Upload to Test PyPI (optional)**
    ```bash
    twine upload --repository testpypi dist/*
    ```
    When prompted, use your Test PyPI username and password (or token). Test install with:
-   `pip install --index-url https://test.pypi.org/simple/ qomputing-simulator`
+   `pip install --index-url https://test.pypi.org/simple/ qomputing`
 
 5. **Upload to PyPI (real release)**
    ```bash
@@ -152,7 +152,7 @@ PyPI is the default place pip installs from. Steps:
 
 6. **Later releases:** Bump `version` in `pyproject.toml`, run `python -m build` again, then `twine upload dist/*`. You cannot reuse the same version number on PyPI.
 
-After step 5, anyone can run `pip install qomputing-simulator` without cloning the repo.
+After step 5, anyone can run `pip install qomputing` without cloning the repo.
 
 ---
 
@@ -161,8 +161,8 @@ After step 5, anyone can run `pip install qomputing-simulator` without cloning t
 ### Install from source (development or local)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/qomputing-simulator.git
-cd qomputing-simulator
+git clone https://github.com/YOUR_USERNAME/qomputing.git
+cd qomputing
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install --upgrade pip
@@ -181,7 +181,7 @@ pip install build
 python -m build
 ```
 
-Install the wheel anywhere: `pip install dist/qomputing_simulator-0.1.0-py3-none-any.whl`
+Install the wheel anywhere: `pip install dist/qomputing-*.whl`
 
 ### Offline / no wheel build
 
@@ -189,13 +189,13 @@ If you cannot use pip to fetch the package:
 
 ```bash
 export PYTHONPATH="$PWD"
-python -m qomputing_simulator.cli random-circuit --qubits 3 --depth 5 --shots 1000
+python -m qomputing.cli random-circuit --qubits 3 --depth 5 --shots 1000
 ```
 
 ## Repository Layout
 
 ```
-qomputing_simulator/
+qomputing/
 ├── circuit.py            # QuantumCircuit builder, JSON (de)serialization
 ├── gates/                # Single-, two-, and multi-qubit gate handlers
 ├── engine/               # StateVectorSimulator core, result dataclass, sampling
@@ -227,7 +227,7 @@ qomputing_simulator/
 You can run the simulator from Python:
 
 ```python
-from qomputing_simulator import (
+from qomputing import (
     QuantumCircuit,
     load_circuit,
     run,
@@ -255,12 +255,12 @@ See `examples/library_usage.py` for a runnable example.
 
 ## Example Circuits
 
-Ready-made demonstrations live in `qomputing_simulator/examples/demo_circuits.py`. After activating your environment, run them as a module from the project root:
+Ready-made demonstrations live in `qomputing/examples/demo_circuits.py`. After activating your environment, run them as a module from the project root:
 
 ```bash
-python -m qomputing_simulator.examples.demo_circuits --example bell
-python -m qomputing_simulator.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024 --seed 7
-python -m qomputing_simulator.examples.demo_circuits --example ghz --shots 1000 --seed 123
+python -m qomputing.examples.demo_circuits --example bell
+python -m qomputing.examples.demo_circuits --example deutsch-jozsa --oracle balanced --shots 1024 --seed 7
+python -m qomputing.examples.demo_circuits --example ghz --shots 1000 --seed 123
 ```
 
 Each command prints the final state vector, measurement probabilities, and (when `--shots > 0`) sampled counts. Use `--example bell|deutsch-jozsa|ghz` and, for Deutsch–Jozsa, pick `--oracle constant|balanced`.

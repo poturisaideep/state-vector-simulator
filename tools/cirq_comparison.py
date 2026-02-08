@@ -27,13 +27,13 @@ except ImportError as exc:  # pragma: no cover - runtime guard
 
 import numpy as np
 
-from qomputing_simulator import (
+from qomputing import (
     QuantumCircuit,
     StateVectorSimulator,
     compute_linear_xeb_fidelity,
 )
-from qomputing_simulator import cli as _cli
-from qomputing_simulator.gates import (
+from qomputing import cli as _cli
+from qomputing.gates import (
     DEFAULT_MULTI_QUBIT_GATES,
     DEFAULT_SINGLE_QUBIT_GATES,
     DEFAULT_TWO_QUBIT_GATES,

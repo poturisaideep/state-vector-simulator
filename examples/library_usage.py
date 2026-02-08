@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Example: using Qomputing Simulator as a library (backend API + simple run)."""
 
-from qomputing_simulator import (
+from qomputing import (
     QomputingSimulator,
     QuantumCircuit,
     load_circuit,
