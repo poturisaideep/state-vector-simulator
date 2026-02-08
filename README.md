@@ -27,24 +27,56 @@ qomputing-sim simulate --circuit circuits/example.json --shots 512 --seed 42
 
 **Run this code in a Python script or notebook (e.g. IPython/Jupyter).**
 
-```python
-from qomputing_simulator import run, QuantumCircuit, load_circuit, run_xeb, random_circuit
+**Backend API (recommended):** Import `QomputingSimulator`, get a backend, then `backend.run(qc, shots=...)` and `result.get_counts()`:
 
-# Build a circuit and run it (no file needed)
+```python
+from qomputing_simulator import QomputingSimulator, QuantumCircuit
+
+backend = QomputingSimulator.get_backend("state_vector")
+
+# Circuit with 4 qubits and 4 classical bits; measure qubits 0,1,2 into classical 0,1,2
+qc = QuantumCircuit(4, 4)
+qc.h(0).cx(0, 1)
+qc.measure(range(3), range(3))
+
+result = backend.run(qc, shots=1024)
+counts = result.get_counts()
+print(counts)
+# Optional: result.get_statevector(), result.get_probabilities()
+```
+
+**Simple API (no backend):** Build a circuit and use `run()` for a quick result:
+
+```python
+from qomputing_simulator import run, QuantumCircuit, run_xeb, random_circuit
+
 circuit = QuantumCircuit(2)
 circuit.h(0).cx(0, 1)   # Bell state
 result = run(circuit, shots=1000, seed=42)
 print(result.final_state, result.probabilities, result.counts)
 
-# Optional: load a circuit from a JSON file (use a path that exists on your machine)
-# circuit = load_circuit("circuits/example.json")
-# result = run(circuit, shots=512)
-
-# Random circuit + linear XEB
 circuit = random_circuit(num_qubits=3, depth=5, seed=7)
 xeb = run_xeb(circuit, shots=1000, seed=7)
 print(xeb.fidelity, xeb.sample_probabilities)
 ```
+
+### 3. Run on Google Colab
+
+1. Open [Google Colab](https://colab.research.google.com/) and create a new notebook.
+2. **First cell** (install):
+   ```python
+   !pip install qomputing-simulator -q
+   ```
+3. **Next cell** (use the library; the CLI is for terminals only):
+   ```python
+   from qomputing_simulator import QomputingSimulator, QuantumCircuit
+
+   backend = QomputingSimulator.get_backend("state_vector")
+   qc = QuantumCircuit(2)
+   qc.h(0).cx(0, 1)
+   result = backend.run(qc, shots=1000, seed=42)
+   print("Counts:", result.get_counts())
+   ```
 
 ---
 

@@ -43,11 +43,15 @@ class Gate:
 class QuantumCircuit:
     """Simple representation of a quantum circuit."""
 
-    def __init__(self, num_qubits: int) -> None:
+    def __init__(self, num_qubits: int, num_clbits: int = 0) -> None:
         if num_qubits <= 0:
             raise ValueError("Circuit must have at least one qubit")
+        if num_clbits < 0:
+            raise ValueError("num_clbits must be non-negative")
         self.num_qubits = int(num_qubits)
+        self.num_clbits = int(num_clbits)
         self._gates: List[Gate] = []
+        self._measurements: List[Tuple[int, int]] = []  # (qubit, clbit) pairs
 
     @property
     def gates(self) -> Tuple[Gate, ...]:
@@ -183,9 +187,31 @@ class QuantumCircuit:
             raise ValueError("cswap target qubits must be distinct")
         return self.add_gate("cswap", [q1, q2], controls=[control])
 
+    def measure(
+        self,
+        qubits: Sequence[int],
+        clbits: Sequence[int] | None = None,
+    ) -> "QuantumCircuit":
+        """Measure qubits into classical bits. If clbits is None, use same indices as qubits."""
+        qubits = _ensure_tuple(qubits)
+        if clbits is None:
+            clbits = qubits
+        else:
+            clbits = _ensure_tuple(clbits)
+        if len(qubits) != len(clbits):
+            raise ValueError("qubits and clbits must have the same length")
+        for q in qubits:
+            if q < 0 or q >= self.num_qubits:
+                raise ValueError(f"Qubit index {q} out of range for {self.num_qubits} qubits")
+        for c in clbits:
+            if c < 0 or c >= self.num_clbits:
+                raise ValueError(f"Classical bit index {c} out of range for {self.num_clbits} classical bits")
+        self._measurements.extend(zip(qubits, clbits))
+        return self
+
     # Serialisation --------------------------------------------------------
     def to_dict(self) -> Dict[str, object]:
-        return {
+        payload: Dict[str, object] = {
             "num_qubits": self.num_qubits,
             "gates": [
                 {
@@ -201,11 +227,17 @@ class QuantumCircuit:
                 for gate in self._gates
             ],
         }
+        if self.num_clbits:
+            payload["num_clbits"] = self.num_clbits
+        if self._measurements:
+            payload["measurements"] = [list(pair) for pair in self._measurements]
+        return payload
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, object]) -> "QuantumCircuit":
         num_qubits = int(payload["num_qubits"])
-        circuit = cls(num_qubits)
+        num_clbits = int(payload.get("num_clbits", 0))
+        circuit = cls(num_qubits, num_clbits)
         for gate_payload in payload.get("gates", []):
             if not isinstance(gate_payload, Mapping):
                 raise TypeError("Gate payload must be a mapping")
@@ -215,6 +247,9 @@ class QuantumCircuit:
                 controls=gate_payload.get("controls"),
                 params=gate_payload.get("params"),
             )
+        for pair in payload.get("measurements", []):
+            q, c = int(pair[0]), int(pair[1])
+            circuit._measurements.append((q, c))
         return circuit
 
     # Internal helpers -----------------------------------------------------
@@ -227,5 +262,5 @@ class QuantumCircuit:
                 )
 
     def __repr__(self) -> str:  # pragma: no cover - debug helper
-        return f"QuantumCircuit(num_qubits={self.num_qubits}, gates={self._gates!r})"
+        return f"QuantumCircuit(num_qubits={self.num_qubits}, num_clbits={self.num_clbits}, gates={self._gates!r})"
 

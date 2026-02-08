@@ -24,3 +24,20 @@ def counts_from_samples(samples: Iterable[str]) -> Dict[str, int]:
         counts[measurement] = counts.get(measurement, 0) + 1
     return counts
 
+
+def samples_to_classical_counts(
+    samples: List[str],
+    num_qubits: int,
+    measure_map: List[tuple],
+    num_clbits: int,
+) -> Dict[str, int]:
+    """Map full-state samples to classical-bit counts using (qubit, clbit) measure map."""
+    counts: Dict[str, int] = {}
+    for sample in samples:
+        cl_bits = ["0"] * num_clbits
+        for q, c in measure_map:
+            cl_bits[c] = sample[num_qubits - 1 - q]  # little-endian qubit order
+        key = "".join(cl_bits)
+        counts[key] = counts.get(key, 0) + 1
+    return counts
+
